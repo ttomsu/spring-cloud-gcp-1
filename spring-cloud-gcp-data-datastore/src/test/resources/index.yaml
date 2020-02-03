@@ -1,0 +1,8 @@
+# This is a Datastore index needed to test projection-based GQL queries.
+# For instructions on how to add this to your project, see:
+# https://cloud.google.com/appengine/docs/standard/python/config/indexconfig
+indexes:
+- kind: Customer
+  properties:
+  - name: isActive
+  - name: lastName

@@ -69,10 +69,21 @@ public class GqlRepositoryIntegrationTests {
 
 		boolean isActive;
 
-		public Customer(long id, String lastName, boolean isActive) {
+		/**
+		 * You need to have a constructor which accepts the *object* Boolean, because your GQL
+		 * projection query does not include isActive so it does not return a true/false value to unbox.
+		 */
+		public Customer(long id, String lastName, Boolean isActive) {
 			this.id = id;
 			this.lastName = lastName;
-			this.isActive = isActive;
+
+			if (isActive == null) {
+				// Give a default value to the boolean if the projection entity does not select on the
+				// isActive column (it will be null).
+				this.isActive = false;
+			} else {
+				this.isActive = isActive;
+			}
 		}
 
 		public String getLastName() {
@@ -103,10 +114,9 @@ public class GqlRepositoryIntegrationTests {
 	public interface CustomerProjection {
 		String getLastName();
 	}
-
 }
 
 interface CustomerRepository extends DatastoreRepository<Customer, Long> {
-	@Query("SELECT * from Customer WHERE isActive = @is_active")
+	@Query("SELECT lastName from Customer WHERE isActive = @is_active")
 	Page<CustomerProjection> findByIsActive(@Param("is_active") boolean isActive, Pageable pageable);
 }
