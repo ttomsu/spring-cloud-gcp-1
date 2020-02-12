@@ -871,10 +871,14 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
 		Process process = new ProcessBuilder("gcloud", "datastore", "indexes", "create", file.getAbsolutePath(), "-q")
 				.start();
 
-		BufferedReader reader = new BufferedReader(
-				new InputStreamReader(process.getInputStream()));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
 		String line;
+		while ((line = reader.readLine()) != null) {
+			System.out.println(line);
+		}
+
+		reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 		while ((line = reader.readLine()) != null) {
 			System.out.println(line);
 		}
