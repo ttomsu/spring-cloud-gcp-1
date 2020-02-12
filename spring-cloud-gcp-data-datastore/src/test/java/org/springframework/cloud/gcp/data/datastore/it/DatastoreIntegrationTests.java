@@ -16,8 +16,10 @@
 
 package org.springframework.cloud.gcp.data.datastore.it;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
@@ -868,6 +870,14 @@ public class DatastoreIntegrationTests extends AbstractDatastoreIntegrationTests
 
 		Process process = new ProcessBuilder("gcloud", "datastore", "indexes", "create", file.getAbsolutePath(), "-q")
 				.start();
+
+		BufferedReader reader = new BufferedReader(
+				new InputStreamReader(process.getInputStream()));
+
+		String line;
+		while ((line = reader.readLine()) != null) {
+			System.out.println(line);
+		}
 
 		if (process.waitFor() != 0) {
 			throw new RuntimeException("Error while creating index.");
